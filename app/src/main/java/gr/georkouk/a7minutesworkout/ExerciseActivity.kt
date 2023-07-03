@@ -9,6 +9,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import gr.georkouk.a7minutesworkout.databinding.ActivityExcerciseBinding
 import java.util.Locale
 
@@ -25,6 +26,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private var tts: TextToSpeech? = null
     private var player: MediaPlayer? = null
+    private var adapter: ExerciseStatusAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +49,13 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
         exercises = Constants.defaultExerciseList()
 
+        binding?.rvExerciseStatus?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        adapter = ExerciseStatusAdapter()
+        binding?.rvExerciseStatus?.adapter = adapter
+        adapter?.setData(exercises!!)
+
         setupRestView()
     }
 
@@ -62,6 +71,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
             override fun onFinish() {
                 currentExercisePosition++
+
+                exercises!!.get(currentExercisePosition).setIsSelected(true)
+                adapter!!.notifyItemChanged(currentExercisePosition)
+
                 setupExerciseView()
             }
         }.start()
@@ -107,6 +120,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             }
 
             override fun onFinish() {
+                exercises!!.get(currentExercisePosition).setIsSelected(false)
+                exercises!!.get(currentExercisePosition).setIsCompleted(true)
+                adapter!!.notifyItemChanged(currentExercisePosition)
+
                 if(currentExercisePosition < exercises?.size!! -1){
                     setupRestView()
                 }
