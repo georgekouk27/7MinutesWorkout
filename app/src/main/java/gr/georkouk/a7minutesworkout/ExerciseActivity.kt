@@ -1,5 +1,6 @@
 package gr.georkouk.a7minutesworkout
 
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +21,8 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private var restProgress: Int = 0
     private var exerciseTimer: CountDownTimer? = null
     private var exerciseProgress: Int = 0
+    private var restTimerDuration: Long = 10
+    private var exerciseTimerDuration: Long = 30
 
     private var exercises: ArrayList<ExerciseModel>? = null
     private var currentExercisePosition = -1
@@ -62,7 +65,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun setRestProgressBar(){
         binding?.progressBar?.progress = restProgress
 
-        restTimer = object: CountDownTimer(10000, 1000){
+        restTimer = object: CountDownTimer(restTimerDuration * 1000, 1000){
             override fun onTick(p0: Long) {
                 restProgress++
                 binding?.progressBar?.progress = 10 - restProgress
@@ -112,7 +115,7 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
     private fun setExerciseProgressBar(){
         binding?.progressBarExercise?.progress = exerciseProgress
 
-        exerciseTimer = object: CountDownTimer(30000, 1000){
+        exerciseTimer = object: CountDownTimer(exerciseTimerDuration * 1000, 1000){
             override fun onTick(p0: Long) {
                 exerciseProgress++
                 binding?.progressBarExercise?.progress = 30 - exerciseProgress
@@ -128,11 +131,10 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     setupRestView()
                 }
                 else{
-                    Toast.makeText(
-                        this@ExerciseActivity,
-                        "Congratulations!! You have completed the 7 minutes workout.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    finish()
+                    startActivity(
+                        Intent(this@ExerciseActivity, FinishActivity::class.java)
+                    )
                 }
             }
         }.start()
