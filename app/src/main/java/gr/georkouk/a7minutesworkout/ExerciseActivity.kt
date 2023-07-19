@@ -1,5 +1,6 @@
 package gr.georkouk.a7minutesworkout
 
+import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
@@ -12,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import gr.georkouk.a7minutesworkout.databinding.ActivityExcerciseBinding
+import gr.georkouk.a7minutesworkout.databinding.DialogCustomBackConfirmationBinding
 import java.util.Locale
 
 class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
@@ -48,7 +50,9 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
 
-        binding?.toolbarExercise?.setNavigationOnClickListener { onBackPressed() }
+        binding?.toolbarExercise?.setNavigationOnClickListener {
+            customDialogForBackButton()
+        }
 
         exercises = Constants.defaultExerciseList()
 
@@ -197,8 +201,31 @@ class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         }
     }
 
+    override fun onBackPressed() {
+        customDialogForBackButton()
+    }
+
     private fun speakOut(text: String){
         tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
+    }
+
+    private fun customDialogForBackButton(){
+        val customDialog = Dialog(this)
+        val binding = DialogCustomBackConfirmationBinding.inflate(layoutInflater)
+
+        customDialog.setContentView(binding.root)
+        customDialog.setCanceledOnTouchOutside(false)
+
+        binding.tvYes.setOnClickListener {
+            this@ExerciseActivity.finish()
+            customDialog.dismiss()
+        }
+
+        binding.tvNo.setOnClickListener {
+            customDialog.dismiss()
+        }
+
+        customDialog.show()
     }
 
 }
