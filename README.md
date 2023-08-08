@@ -1,7 +1,7 @@
 # 7MinutesWorkout
 A playground project using kotlin
 
-##Tech stuff
+## Tech stuff
 * Kotlin
 * Room
 * ViewBinding
