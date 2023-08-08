@@ -1,5 +1,6 @@
 # 7MinutesWorkout
 A playground project using kotlin
+(in progress)
 
 ## Tech stuff
 * Kotlin
